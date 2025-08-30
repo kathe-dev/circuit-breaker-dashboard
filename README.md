@@ -3,19 +3,52 @@
 Este proyecto es una simulación visual de un **Circuit Breaker** para microservicios.  
 Permite observar cómo cambia el estado del *circuit breaker* (`Closed`, `Open`, `Half-Open`) cuando se realizan peticiones al servicio y este responde correctamente o falla.  
 
-## 📌 Características  
+---
 
-- Visualización clara del **estado actual** del *circuit breaker*.  
-- Tres posibles estados:  
-  - 🟢 **Closed**: todas las peticiones pasan normalmente.  
-  - 🔴 **Open**: las peticiones fallan inmediatamente, protegiendo al servicio.  
-  - 🟡 **Half-Open**: se permite pasar algunas peticiones de prueba para verificar recuperación.  
-- Simulación de peticiones periódicas con resultados aleatorios (éxito o fallo).  
-- **Logs en tiempo real** de cada petición con su resultado.  
-- Botones de control para cambiar rápidamente el escenario:  
-  - 🌱 **Escenario sano** (pocas fallas).  
-  - 💥 **Escenario con fallos** (mayor tasa de errores).  
-- Estadísticas dinámicas: número de peticiones totales, éxitos y fallos.  
+## 📖 Descripción de la prueba  
+
+La prueba consiste en implementar el patrón **Circuit Breaker** y representarlo visualmente en un dashboard.  
+El circuito protege al sistema de sobrecargas y fallas consecutivas en un servicio externo.  
+
+Se muestran en tiempo real:  
+- El **estado actual del circuito**.  
+- El resultado de cada petición (éxito o fallo).  
+- Un registro de logs para entender el comportamiento del sistema.  
+
+---
+
+## 🎯 Objetivo(s) de la prueba  
+
+- Implementar un **Circuit Breaker** en un entorno controlado.  
+- Observar cómo responde el patrón frente a escenarios de fallas y recuperación.  
+- Brindar una visualización clara para comprender mejor los estados del circuito.  
+
+---
+
+## ⚙️ Pasos implementados  
+
+1. Configuración inicial del proyecto con **Node.js**.  
+2. Implementación de un servicio simulado que responde con éxito o error según un *failure rate*.  
+3. Desarrollo de un **circuit breaker** con los tres estados principales:  
+   - 🟢 Closed  
+   - 🔴 Open  
+   - 🟡 Half-Open  
+4. Creación de un **dashboard visual** en el navegador que:  
+   - Muestra el estado del circuito.  
+   - Genera logs en tiempo real.  
+   - Incluye botones de control para cambiar la tasa de fallos (20% o 70%).  
+5. Documentación y pruebas de comportamiento.  
+
+---
+
+## 🛠️ Tecnologías usadas  
+
+- **Node.js** (entorno de ejecución).  
+- **HTML5** (estructura del dashboard).  
+- **CSS3** (estilos y estados visuales).  
+- **JavaScript (Vanilla)** (lógica del circuito y simulación).  
+
+---
 
 ## 🚀 Uso  
 
@@ -36,12 +69,12 @@ npm install
 npm run dev
 ```
 
-1. Abre el navegador en la URL que indique la terminal (http://localhost:3000).
-2. Verás el panel principal con el **estado del circuito** y los botones de control.  
-3. Selecciona un escenario con los botones:  
+4. Abre el navegador en la URL que indique la terminal (http://localhost:3000).
+5. Verás el panel principal con el **estado del circuito** y los botones de control.  
+6. Selecciona un escenario con los botones:  
    - 🌱 Escenario sano → 20% de fallos.  
    - 💥 Escenario con fallos → 70% de fallos.  
-4. Observa cómo cambian el **estado** y los **logs** en tiempo real.  
+7. Observa cómo cambian el **estado** y los **logs** en tiempo real.  
 
 ## 🛠️ Tecnologías  
 
