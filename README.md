@@ -55,7 +55,8 @@ Se muestran en tiempo real:
 1. Clona este repositorio
 
 ```console
-git clone https://github.com/kathe-dev/circuit-breaker-dashboard
+git clone https://github.com/kathe-dev/circuit-breaker-dashboard.git
+cd circuit-breaker-dashboard
 ```
 
 2. Instala las dependencias
