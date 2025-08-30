@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Circuit Breaker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .state {
+      font-size: 2rem;
+      font-weight: bold;
+      padding: 15px 30px;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+    .CLOSED {
+      background: #c8f7c5;
+      color: #2d862d;
+    }
+    .OPEN {
+      background: #f7c5c5;
+      color: #862d2d;
+    }
+    .HALF_OPEN {
+      background: #fff3c5;
+      color: #866b2d;
+    }
+    .stats {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .logs {
+      margin-top: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+      width: 80%;
+      background: #222;
+      color: #eee;
+      padding: 10px;
+      font-size: 0.9rem;
+      border-radius: 8px;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .healthy {
+      background: #2d862d;
+      color: white;
+    }
+    .healthy:hover {
+      background: #256d25;
+    }
+    .fail {
+      background: #862d2d;
+      color: white;
+    }
+    .fail:hover {
+      background: #6d2525;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚦 Dashboard Circuit Breaker</h1>
+  <div id="state" class="state">Cargando...</div>
+  <div class="stats" id="stats"></div>
+
+  <div class="controls">
+    <button class="healthy" onclick="setFailRate(0.2)">🌱 Escenario sano</button>
+    <button class="fail" onclick="setFailRate(0.7)">💥 Escenario con fallos</button>
+  </div>
+  
+  <h2>Logs de peticiones</h2>
+  <div class="logs" id="logs"></div>
+
+  <script>
+    const logsDiv = document.getElementById("logs");
+    let currentFailRate = 0.2; // por defecto, escenario sano
+
+    function addLog(message) {
+      const p = document.createElement("p");
+      p.textContent = message;
+      logsDiv.appendChild(p);
+      logsDiv.scrollTop = logsDiv.scrollHeight;
+    }
+
+    function setFailRate(rate) {
+      currentFailRate = rate;
+      addLog(`⚙️ Cambiado failRate a ${rate}`);
+    }
+
+    async function fetchStatus() {
+      try {
+        const res = await fetch("http://localhost:3000/status");
+        const data = await res.json();
+
+        const stateDiv = document.getElementById("state");
+        stateDiv.textContent = `Estado: ${data.state}`;
+        stateDiv.className = "state " + data.state;
+
+        document.getElementById("stats").innerHTML = `
+          <p><b>Fallos:</b> ${data.failures}</p>
+          <p><b>Éxitos:</b> ${data.successes}</p>
+          <p><b>Próximo intento:</b> ${new Date(data.nextAttempt).toLocaleTimeString()}</p>
+          <p><b>Umbral de fallos:</b> ${data.failureThreshold}</p>
+          <p><b>Umbral de éxitos:</b> ${data.successThreshold}</p>
+          <p><b>Cooldown:</b> ${data.cooldownTime / 1000}s</p>
+        `;
+      } catch (err) {
+        addLog("❌ Error consultando /status");
+      }
+    }
+
+    async function fireRequest() {
+      try {
+        const res = await fetch(`http://localhost:3000/test?failRate=${currentFailRate}`);
+        const data = await res.json();
+        if (data.ok) {
+          addLog(`✅ Éxito (failRate=${currentFailRate})`);
+        } else {
+          addLog(`❌ Falla: ${data.error} (state=${data.breaker.state})`);
+        }
+      } catch (err) {
+        addLog("⚠️ Error llamando /test");
+      }
+    }
+
+    // Actualizar estado cada 1s
+    setInterval(fetchStatus, 1000);
+    fetchStatus();
+
+    // Disparar requests automáticos cada 2s
+    setInterval(fireRequest, 2000);
+  </script>
+</body>
+</html>
