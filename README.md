@@ -55,8 +55,7 @@ Se muestran en tiempo real:
 1. Clona este repositorio
 
 ```console
-git clone https://github.com/SoftwareArchitecture-Space/400CIS002-20252-poc-availability.git
-cd 400CIS002-20252-poc-availability
+git clone https://github.com/kathe-dev/circuit-breaker-dashboard
 ```
 
 2. Instala las dependencias
